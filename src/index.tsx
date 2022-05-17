@@ -1,8 +1,11 @@
 import {
-  ApolloClient,
-  InMemoryCache, // cache of query results,
-  gql
+  ApolloClient, // cache of query results
+  ApolloProvider,
+  InMemoryCache
 } from "@apollo/client";
+import React from "react";
+import { render } from "react-dom";
+import App from "./App";
 
 // initialize client using existing graphQL server (spaceX launches?)
 const client = new ApolloClient({
@@ -10,34 +13,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache() // instantiate cache
 });
 
-// query
-client
-  .query({
-    query: gql`
-      query TestQuery {
-        launch(id: 56) {
-          id
-          mission {
-            name
-          }
-        }
-      }
-    `
-  })
-  .then((result) => console.log(result));
-/* - Result
-{
-  "data": {
-    "launch": {
-      "__typename": "Launch",
-      "id": "56",
-      "mission": {
-        "__typename": "Mission",
-        "name": "Paz / Starlink Demo"
-      }
-    }
-  },
-  "loading": false,
-  "networkStatus": 7
-} 
-*/
+render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById("root")
+);
